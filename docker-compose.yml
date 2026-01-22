@@ -229,28 +229,37 @@ services:
   # Observability (Prometheus + Grafana)
   # -----------------------
   prometheus:
-    image: prom/prometheus:v2.54.1
-    profiles: ["obs"]
+    image: prom/prometheus:latest
+    container_name: prometheus
     ports:
       - "9090:9090"
     volumes:
-      - ./init/observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-    networks: [platform]
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.enable-lifecycle"
+    restart: unless-stopped
 
   grafana:
-    image: grafana/grafana:11.1.4
-    profiles: ["obs"]
+    image: grafana/grafana:latest
+    container_name: grafana
+    depends_on:
+      - prometheus
     ports:
       - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
     volumes:
-      - grafana-data:/var/lib/grafana
-    networks: [platform]
-
-networks:
-  platform:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    restart: unless-stopped
 
 volumes:
-  minio-data:
-  airflow-db:
-  mlflow-db:
-  grafana-data:
+  prometheus_data:
+  grafana_data:
+
