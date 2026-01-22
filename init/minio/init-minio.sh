@@ -7,7 +7,7 @@ mc alias set local http://minio:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"
 mc mb -p local/lakehouse || true
 mc mb -p local/mlflow-artifacts || true
 
-# Bronze/Silver/Gold folders (convention)
+# dossiers Bronze/Silver/Gold
 mc cp --recursive /dev/null local/lakehouse/bronze/ 2>/dev/null || true
 mc cp --recursive /dev/null local/lakehouse/silver/ 2>/dev/null || true
 mc cp --recursive /dev/null local/lakehouse/gold/   2>/dev/null || true

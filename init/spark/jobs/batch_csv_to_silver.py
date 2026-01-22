@@ -10,11 +10,10 @@ silver = "s3a://lakehouse/silver/intrusion_events/"
 df = (spark.read.option("header", True).csv(src)
       .withColumn("ingest_ts", current_timestamp()))
 
-# Write Bronze (raw structured)
+# Write Bronze (raw)
 df.write.mode("append").parquet(bronze)
 
-# Silver: enforce simple normalisation example
-# (à adapter aux colonnes réelles : label, session_id, user_id, etc.)
+# Silver (structuré)
 df.write.mode("append").parquet(silver)
 
 print("OK")

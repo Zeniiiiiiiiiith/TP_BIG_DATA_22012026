@@ -12,7 +12,6 @@ TOPIC_OUT = "alerts"
 producer = KafkaProducer(bootstrap_servers=BOOTSTRAP, value_serializer=lambda v: json.dumps(v).encode("utf-8"))
 
 def score_event(event: dict) -> dict:
-    # Heuristique dummy: status >= 400 => suspect
     status = int(event.get("status") or 0)
     label = "suspect" if status >= 400 else "legitime"
     event["prediction"] = label
