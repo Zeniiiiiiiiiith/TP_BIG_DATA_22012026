@@ -1,0 +1,19 @@
+filebeat.inputs:
+  - type: filestream
+    id: web-access
+    enabled: true
+    paths:
+      - /var/log/custom/access.log
+
+output.kafka:
+  hosts: ["kafka:9092"]
+  topic: "raw-logs"
+  codec.json:
+    pretty: false
+    escape_html: false
+
+processors:
+  - add_fields:
+      target: ""
+      fields:
+        source_type: "web_log"

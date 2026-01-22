@@ -1,0 +1,12 @@
+project: webnav
+registry: s3://lakehouse/feast/registry.db
+provider: local
+
+online_store:
+  type: redis
+  connection_string: "${FEAST_REDIS_HOST}:${FEAST_REDIS_PORT}"
+
+offline_store:
+  type: file
+
+entity_key_serialization_version: 2
